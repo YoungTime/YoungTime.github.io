@@ -86,17 +86,17 @@
 <meta property="og:site_name" content="DoubleThought">
 <meta property="og:description" content="ArrayList 源码分析  ArrayList 是 Java 中比较常用的集合之一。它实现了 List, RandomAccess, Cloneable, java.io.Serializable 这四个接口，List 接口是为了让 ArrayList 去实现 List 的各种方法，实现 RandomAccess 是为了让 ArrayList 支持快速快速随机访问，实现 Cloneable 是">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_1.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_2.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_3.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_4.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_5.jpg">
-<meta property="og:image" content="http://yoursite.com/2019/09/29/image/hashmap_1_3.png">
-<meta property="og:updated_time" content="2019-09-29T01:23:38.064Z">
+<meta property="og:image" content="http://yoursite.com/image/arraylist_1_1.png">
+<meta property="og:image" content="http://yoursite.com/image/arraylist_1_2.png">
+<meta property="og:image" content="http://yoursite.com/image/arraylist_1_3.png">
+<meta property="og:image" content="http://yoursite.com/image/arraylist_1_4.png">
+<meta property="og:image" content="http://yoursite.com/image/arraylist_1_5.jpg">
+<meta property="og:image" content="http://yoursite.com/image/hashmap_1_3.png">
+<meta property="og:updated_time" content="2019-09-29T07:35:20.345Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ArrayList 源码解析(基于 JDK 1.8)">
 <meta name="twitter:description" content="ArrayList 源码分析  ArrayList 是 Java 中比较常用的集合之一。它实现了 List, RandomAccess, Cloneable, java.io.Serializable 这四个接口，List 接口是为了让 ArrayList 去实现 List 的各种方法，实现 RandomAccess 是为了让 ArrayList 支持快速快速随机访问，实现 Cloneable 是">
-<meta name="twitter:image" content="http://yoursite.com/2019/09/29/image/arraylist_1_1.png">
+<meta name="twitter:image" content="http://yoursite.com/image/arraylist_1_1.png">
 
 
 
@@ -328,13 +328,13 @@
       
         <h1 id="ArrayList-源码分析"><a href="#ArrayList-源码分析" class="headerlink" title="ArrayList 源码分析"></a>ArrayList 源码分析</h1><p>  ArrayList 是 Java 中比较常用的集合之一。它实现了 List<e>, RandomAccess, Cloneable, java.io.Serializable 这四个接口，List<e> 接口是为了让 ArrayList 去实现 List 的各种方法，实现 RandomAccess 是为了让 ArrayList 支持快速快速随机访问，实现 Cloneable 是为了让 ArrayList 支持 clone() 方法，实现 Serializable 是为了让 ArrayList 支持序列化。</e></e></p>
 <p>  上面实现的 List 和 Serializable 接口可能大家都没什么疑惑，但是 RandomAccess  和 Cloneable 呢？我们看 RandomAccess  和 Cloneable  的源码，发现这两个接口都是空的。</p>
-<p><img src="../image/arraylist_1_1.png" alt="arraylist_1_1"></p>
-<p><img src="../image/arraylist_1_2.png" alt="arraylist_1_2"></p>
+<p><img src="../../../../../image/arraylist_1_1.png" alt="arraylist_1_1"></p>
+<p><img src="../../../../../image/arraylist_1_2.png" alt="arraylist_1_2"></p>
 <p>其实这两个空的接口都是标记型接口，什么意思呢？就是来标记一个类是否属于使用快速随机访问个 clone() 方法的标记。</p>
 <p>比如标记型接口是怎么标记是否可以使用快速随机访问的呢？在集合类 Collections 中我们可以看到：</p>
-<p><img src="../image/arraylist_1_3.png" alt="arraylist_1_3"></p>
+<p><img src="../../../../../image/arraylist_1_3.png" alt="arraylist_1_3"></p>
 <p>是否实现了 RandomAccess  接口使用的搜索方法是不一样的。那么 Cloneable 的标记呢？我们知道 clone() 方法是 Object 类的，所以直接来看 Object 的源码：</p>
-<p><img src="../image/arraylist_1_4.png" alt="arraylist_1_4"></p>
+<p><img src="../../../../../image/arraylist_1_4.png" alt="arraylist_1_4"></p>
 <p>  我们看到了，如果没有实现 Cloneable 接口而使用 clone() 方法的话是会抛出 CloneNotSupportedException。所以类似于 RandomAccess 和 Cloneable 这样没有实体的接口在 Java 中被称为标记型接口，用来标记一个类或者接口。</p>
 <h2 id="主要参数"><a href="#主要参数" class="headerlink" title="主要参数"></a>主要参数</h2><p>  接下来我们看一下 ArrayList 的主要参数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ArrayList 的默认容量</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是一个空数组，用来初始化真正保存数据的数组</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个也是空数组，用来初始化的，它与上面的空数组的不同在源码中解释如下</span></span><br><span class="line"><span class="comment">// We distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when first </span></span><br><span class="line"><span class="comment">// element is added.</span></span><br><span class="line"><span class="comment">// 我们将此与EMPTY_ELEMENTDATA区别开来，以了解添加第一个元素时要充气多少。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ArrayList 中用来真正保存数组的 Object 数组</span></span><br><span class="line"><span class="keyword">transient</span> Object[] elementData;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ArrayList 中保存的元素数量</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> size;</span><br></pre></td></tr></table></figure>
@@ -353,7 +353,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FastNative</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">arraycopy</span><span class="params">(Object src,  <span class="keyword">int</span>  srcPos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        Object dest, <span class="keyword">int</span> destPos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        <span class="keyword">int</span> length)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>  这个方法在源码中是一个 native 方法，是一个快速拷贝数组的方法，这个方法是指我们将数组 src 从位置 srcPos 开始，拷贝到从 destPos 位置开始的数组 dest 中，一共拷贝 length 个元素：</p>
-<p><img src="../image/arraylist_1_5.jpg" alt="arraylist_1_5"></p>
+<p><img src="../../../../../image/arraylist_1_5.jpg" alt="arraylist_1_5"></p>
 <p>  现在我们可以来看看第二个 add() 方法了：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将元素添加到数组固定位置</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 插入的 index 是不能比 size 大，比 0 小</span></span><br><span class="line">        <span class="keyword">if</span> (index &gt; size || index &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">        <span class="comment">// 确保内部容量足够</span></span><br><span class="line">        ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">        System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>,</span><br><span class="line">                         size - index);</span><br><span class="line">        <span class="comment">// 数组 index 位置的元素为 element</span></span><br><span class="line">        elementData[index] = element;</span><br><span class="line">        <span class="comment">// 数组元素数量 ++</span></span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
@@ -387,7 +387,7 @@
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>  通过这次的 ArrayList 源码分析，我们可以看到 ArrayList 的查询是非常快的，但是增删都比较慢，add() 如果是直接添加到末尾还好说，如果添加到中间，数组后面的元素是全部需要移动的，而删除时，不管是哪种方式，都是需要移动数组，就导致增删比较慢。当然这里的慢一般是比较少见的，平时我们使用的场景的数组元素的个数一般来说是感受不到这种快慢的，但是呢，我们了解了其内部结构过后我们也可以按照场景选择不同的集合类了。</p>
 <p>好了，ArrayList 的源码就分享到这里了，喜欢的话请关注我的个人微信公众号：</p>
-<p><img src="../image/hashmap_1_3.png" alt="WeChat"></p>
+<p><img src="../../../../../image/hashmap_1_3.png" alt="WeChat"></p>
 
       
     </div>
