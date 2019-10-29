@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/image/hashmap_1_1.png">
 <meta property="og:image" content="http://yoursite.com/image/hashmap_1_2.png">
 <meta property="og:image" content="http://yoursite.com/image/hashmap_1_3.png">
-<meta property="og:updated_time" content="2019-09-12T08:47:07.559Z">
+<meta property="og:updated_time" content="2019-10-29T09:56:50.700Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HsahMap 源码解读">
 <meta name="twitter:description" content="HashMap 源码解读  说到 HashMap，大家一定都不会陌生，不管是我们平时使用，或者是面试的时候，都会遇到它，了解其源码还是相当重要的。   HashMap 其实维护的的数据结构是 Node&amp;lt;K,V&amp;gt;  的数组加链表（下面会说到为什么），也是说的维护的 Hash 桶，什么意思呢？按照笔者个人理解就是说 HashMap 中保存数据的是一个叫 table 的数组，HashMap">
@@ -376,8 +376,9 @@
 <p>  通过上面的代码可以看到，距离差为 j + oldCap - j = oldCap，距离差就为 oldCap，为什么是这个呢？按照上面说的距离差应该是 (n1 - 1) &amp; hash - (n - 1) &amp; hash，那么就是 hash 值的后 m+1 位减去 hash 值的后 m 位，那么就等于 hash 的二进制只有第 m+1 位不确定，其它为都为 0 的值。二进制中就只有 0 和 1，如果为 0 ，那么距离差就为 0，那么就是 j 的位置，那如果 第 m+1 为 1 呢？记得上面的图吗？n 的 1 后面有 m 个 0，那么第 m+1 位为 1 那不就是 n，也就是 oldCap 吗？所以新的位置就在 j + oldCap。</p>
 <p>  那么我们怎么拿到第 m+1 位是 0 还是 1 呢？你们看 oldCap 也就是 n，只有第 m+1 位为 1 ，1 &amp; 任何数为任何数，0 &amp; 任何数为 0，那么第 m+1 位的值不就等于  e.hash &amp; n，也就是 e.hash &amp; oldCap 吗？</p>
 <p>  所以我们源码中才会判断当 e.hash &amp; oldCap 为 0 时将节点插入到 lo 链表，不为 0 时插入到 hi 链表，我们的扩容就将一个链表巧妙的分成了两个链表。</p>
-<p>  好了，HashMap 的源码主要部分就先说到这里，如果想要一起学习的话，可以持续关注这个项目，或者关注我的个人微信公众号。</p>
-<p><img src="../../../../../image/hashmap_1_3.png" alt="hashmap_1_3"></p>
+<p>  好了，HashMap 的源码主要部分就先说到这里，如果想要一起学习的话，可以持续关注这个 <a href="https://github.com/YoungTime/CodeShare" target="_blank" rel="noopener">GitHub项目</a>，或者关注我的个人微信公众号。</p>
+<p><img src="../../../../../image/hashmap_1_3.png" alt="WeChat"></p>
+<p>  觉得喜欢的话请给我这个 <a href="https://github.com/YoungTime/CodeShare" target="_blank" rel="noopener">GitHub 项目</a> 一个 Star，谢谢！</p>
 
       
     </div>
@@ -495,7 +496,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/image/arraylist_1_4.png">
 <meta property="og:image" content="http://yoursite.com/image/arraylist_1_5.jpg">
 <meta property="og:image" content="http://yoursite.com/image/hashmap_1_3.png">
-<meta property="og:updated_time" content="2019-09-29T07:35:20.345Z">
+<meta property="og:updated_time" content="2019-10-29T09:56:39.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ArrayList 源码解析(基于 JDK 1.8)">
 <meta name="twitter:description" content="ArrayList 源码分析  ArrayList 是 Java 中比较常用的集合之一。它实现了 List, RandomAccess, Cloneable, java.io.Serializable 这四个接口，List 接口是为了让 ArrayList 去实现 List 的各种方法，实现 RandomAccess 是为了让 ArrayList 支持快速快速随机访问，实现 Cloneable 是">
@@ -386,8 +386,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 我们可以看到，fastRemove() 方法与第一个 remove() 方法差不多一样的</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fastRemove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">            System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                             numMoved);</span><br><span class="line">        elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>  通过这次的 ArrayList 源码分析，我们可以看到 ArrayList 的查询是非常快的，但是增删都比较慢，add() 如果是直接添加到末尾还好说，如果添加到中间，数组后面的元素是全部需要移动的，而删除时，不管是哪种方式，都是需要移动数组，就导致增删比较慢。当然这里的慢一般是比较少见的，平时我们使用的场景的数组元素的个数一般来说是感受不到这种快慢的，但是呢，我们了解了其内部结构过后我们也可以按照场景选择不同的集合类了。</p>
-<p>好了，ArrayList 的源码就分享到这里了，喜欢的话请关注我的个人微信公众号：</p>
+<p>好了，ArrayList 的源码就分享到这里了，如果想要一起学习的话，可以持续关注这个 <a href="https://github.com/YoungTime/CodeShare" target="_blank" rel="noopener">GitHub项目</a>，或者关注我的个人微信公众号。</p>
 <p><img src="../../../../../image/hashmap_1_3.png" alt="WeChat"></p>
+<p>  觉得喜欢的话请给我这个 <a href="https://github.com/YoungTime/CodeShare" target="_blank" rel="noopener">GitHub 项目</a> 一个 Star，谢谢！</p>
 
       
     </div>
@@ -421,6 +422,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/29/HashSet-源码分析/" rel="prev" title="HashSet 源码分析">
+                HashSet 源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -499,7 +504,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
